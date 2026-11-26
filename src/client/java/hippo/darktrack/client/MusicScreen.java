@@ -14,23 +14,27 @@ public class MusicScreen extends Screen {
     protected void init() {
         int h = 20;
         int gap = 6;
-        int prevW = 50;
-        int playW = 80;
-        int nextW = 50;
-        int total = prevW + playW + nextW + gap * 2;
+        int sideW = 50;
+        int midW = 80;
+        int total = sideW + midW + sideW + gap * 2;
         int x = this.width / 2 - total / 2;
-        int y = this.height / 2 - h / 2;
+        int midX = x + sideW + gap;
+        int rightX = midX + midW + gap;
+        int row1 = this.height / 2 - h - gap / 2;
+        int row2 = this.height / 2 + gap / 2;
 
-        this.addRenderableWidget(Button.builder(Component.literal("Prev"),
-                b -> MediaKeys.press(MediaKeys.PREVIOUS))
-                .bounds(x, y, prevW, h).build());
+        addMediaButton("Prev", MediaKeys.PREVIOUS, x, row1, sideW, h);
+        addMediaButton("Play/Pause", MediaKeys.PLAY_PAUSE, midX, row1, midW, h);
+        addMediaButton("Next", MediaKeys.NEXT, rightX, row1, sideW, h);
 
-        this.addRenderableWidget(Button.builder(Component.literal("Play/Pause"),
-                b -> MediaKeys.press(MediaKeys.PLAY_PAUSE))
-                .bounds(x + prevW + gap, y, playW, h).build());
+        addMediaButton("Vol -", MediaKeys.VOLUME_DOWN, x, row2, sideW, h);
+        addMediaButton("Mute", MediaKeys.MUTE, midX, row2, midW, h);
+        addMediaButton("Vol +", MediaKeys.VOLUME_UP, rightX, row2, sideW, h);
+    }
 
-        this.addRenderableWidget(Button.builder(Component.literal("Next"),
-                b -> MediaKeys.press(MediaKeys.NEXT))
-                .bounds(x + prevW + gap + playW + gap, y, nextW, h).build());
+    private void addMediaButton(String label, byte key, int x, int y, int w, int h) {
+        this.addRenderableWidget(Button.builder(Component.literal(label),
+                b -> MediaKeys.press(key))
+                .bounds(x, y, w, h).build());
     }
 }

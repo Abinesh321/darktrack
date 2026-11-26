@@ -21,12 +21,18 @@ public class DarktrackClient implements ClientModInitializer {
         KeyMapping play = register("play_pause", GLFW.GLFW_KEY_F7, category);
         KeyMapping next = register("next", GLFW.GLFW_KEY_F8, category);
         KeyMapping open = register("open_widget", GLFW.GLFW_KEY_F9, category);
+        KeyMapping volDown = register("volume_down", GLFW.GLFW_KEY_LEFT_BRACKET, category);
+        KeyMapping volUp = register("volume_up", GLFW.GLFW_KEY_RIGHT_BRACKET, category);
+        KeyMapping mute = register("mute", GLFW.GLFW_KEY_BACKSLASH, category);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (prev.consumeClick()) MediaKeys.press(MediaKeys.PREVIOUS);
             while (play.consumeClick()) MediaKeys.press(MediaKeys.PLAY_PAUSE);
             while (next.consumeClick()) MediaKeys.press(MediaKeys.NEXT);
             while (open.consumeClick()) client.gui.setScreen(new MusicScreen());
+            while (volDown.consumeClick()) MediaKeys.press(MediaKeys.VOLUME_DOWN);
+            while (volUp.consumeClick()) MediaKeys.press(MediaKeys.VOLUME_UP);
+            while (mute.consumeClick()) MediaKeys.press(MediaKeys.MUTE);
         });
     }
 

@@ -3,5 +3,8 @@
     "key.darktrack.previous": "Previous Song",
     "key.darktrack.play_pause": "Play / Pause",
     "key.darktrack.next": "Next Song",
-    "key.darktrack.open_widget": "Open Music Widget"
+    "key.darktrack.open_widget": "Open Music Widget",
+    "key.darktrack.volume_down": "Volume Down",
+    "key.darktrack.volume_up": "Volume Up",
+    "key.darktrack.mute": "Mute"
 }

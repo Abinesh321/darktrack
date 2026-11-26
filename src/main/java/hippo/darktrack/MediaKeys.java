@@ -13,6 +13,9 @@ public class MediaKeys {
     public static final byte NEXT = (byte) 0xB0;
     public static final byte PREVIOUS = (byte) 0xB1;
     public static final byte PLAY_PAUSE = (byte) 0xB3;
+    public static final byte MUTE = (byte) 0xAD;
+    public static final byte VOLUME_DOWN = (byte) 0xAE;
+    public static final byte VOLUME_UP = (byte) 0xAF;
 
     public static void press(byte key) {
         User32.INSTANCE.keybd_event(key, (byte) 0, 0, 0);
