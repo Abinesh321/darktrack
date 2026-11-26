@@ -10,6 +10,7 @@ It works by sending Windows media keys, so it works with Spotify and most other 
 - Next song with **F8**
 - Previous song with **F6**
 - Keys can be changed in Options > Controls > Key Binds under "Music Controls"
+- Open a clickable music widget with **M** (Prev, Play/Pause, Next buttons)
 
 ## Requirements
 
