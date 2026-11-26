@@ -1,4 +1,15 @@
 
+## Download
+
+Get the latest jar from the [Releases page](https://github.com/Abinesh321/darktrack/releases).
+
+## Installation
+
+1. Install Minecraft 26.2 with Fabric Loader
+2. Download Fabric API for 26.2 and the Darktrack jar
+3. Put both jars in your `mods` folder (`%appdata%\.minecraft\mods`)
+4. Launch the Fabric profile
+
 # Darktrack
 
 A client-side Fabric mod that lets you control your music from inside Minecraft, so you never have to leave the game to pause, skip, or change the volume.
