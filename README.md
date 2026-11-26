@@ -23,6 +23,7 @@ It works by sending Windows media keys, so it works with Spotify and most other 
 - Volume keys: volume down (**[**), volume up (**]**), mute (**\\**)
 - Clickable music widget with buttons, opened with **F9** (close it with **Esc**)
 - All keys can be changed in Options > Controls > Key Binds under "Music Controls"
+- A Music button in the pause menu that opens the widget
 
 Note: the volume and mute controls change the Windows system volume, so Minecraft's sounds and other apps are affected too.
 

@@ -5,15 +5,34 @@ import hippo.darktrack.MediaKeys;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.network.chat.Component;
 
 public class DarktrackClient implements ClientModInitializer {
     private static final String ID = "darktrack";
 
     @Override
     public void onInitializeClient() {
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof PauseScreen) {
+                Button musicButton = Button.builder(Component.literal("Music"),
+                    b -> client.gui.setScreen(new MusicScreen()))
+                        .bounds(scaledWidth - 70, 6, 64, 20)
+                        .build();
+                Screens.getWidgets(screen).add(musicButton);
+            }
+        });
+        
         KeyMapping.Category category = KeyMapping.Category.register(
                 Identifier.fromNamespaceAndPath(ID, "music"));
 
