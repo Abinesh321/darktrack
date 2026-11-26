@@ -2,6 +2,7 @@
 ## Download
 
 Get the latest jar from the [Releases page](https://github.com/Abinesh321/darktrack/releases).
+OR [click](https://github.com/Abinesh321/darktrack/releases/download/v1.0.0/darktrack-1.0.0.jar) this for direct download
 
 ## Installation
 
