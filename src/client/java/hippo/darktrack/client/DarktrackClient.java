@@ -12,7 +12,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -23,6 +25,8 @@ import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.gui.components.SpriteIconButton;
+import net.minecraft.client.gui.components.AbstractWidget;
 
 public class DarktrackClient implements ClientModInitializer {
     private static final String ID = "darktrack";
@@ -31,14 +35,36 @@ public class DarktrackClient implements ClientModInitializer {
     public void onInitializeClient() {
         MediaSession.start();
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof PauseScreen) {
-                Button musicButton = Button.builder(Component.literal("Music"),
-                    b -> client.gui.setScreen(new MusicScreen(screen)))
-                        .bounds(scaledWidth - 70, 6, 64, 20)
-                        .build();
+             if (screen instanceof PauseScreen) {
+                 SpriteIconButton musicButton = SpriteIconButton.builder(Component.literal("Music"),
+                     b -> client.gui.setScreen(new MusicScreen(screen)), true)
+                .size(20, 20)
+                .sprite(Identifier.fromNamespaceAndPath(ID, "music_icon"), 16, 16)
+                .build();
+
+                // look for Mod Menu's "Mods" button on this screen
+                String modsText = Component.translatable("modmenu.title").getString();
+                AbstractWidget modMenuButton = null;
+                for (AbstractWidget w : Screens.getWidgets(screen)) {
+                    if (w.getMessage().getString().startsWith(modsText)) {
+                        modMenuButton = w;
+                        break;
+                    }
+                }
+                if (modMenuButton != null) {
+                    // right next to Mod Menu's button, vertically centered with it
+                    int x = modMenuButton.getX() + modMenuButton.getWidth() + 4;
+                    musicButton.setX(Math.min(x, scaledWidth - 24));
+                    musicButton.setY(modMenuButton.getY() + (modMenuButton.getHeight() - 20) / 2);
+                } else {
+                    // no Mod Menu: stay in the top-right corner
+                    musicButton.setX(scaledWidth - 26);
+                    musicButton.setY(6);
+                } 
+
                 Screens.getWidgets(screen).add(musicButton);
-            }
-        });
+             }
+    });
         
         KeyMapping.Category category = KeyMapping.Category.register(
                 Identifier.fromNamespaceAndPath(ID, "music"));
