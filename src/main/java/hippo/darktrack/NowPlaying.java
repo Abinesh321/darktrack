@@ -52,4 +52,15 @@ public class NowPlaying {
         if (title.toLowerCase().startsWith("spotify")) return null;
         return title;
     }
+    
+        // Returns just the song name (the part after "Artist - "), or null if nothing is playing.
+    public static String getCurrentSongName() {
+        String full = getCurrentSong();
+        if (full == null) return null;
+        int split = full.indexOf(" - ");
+        if (split >= 0) {
+            return full.substring(split + 3);
+        }
+        return full; // no " - " found, so show it as it is
+    }
 }

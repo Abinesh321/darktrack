@@ -30,12 +30,26 @@ public class MusicScreen extends Screen {
     }
 
     private void updateSong() {
-        String song = NowPlaying.getCurrentSong();
-        Component text = Component.literal(song != null ? song : "Nothing playing");
+        String song = NowPlaying.getCurrentSongName();
+        String shown = fit(song != null ? song : "Nothing playing", Math.min(200, this.width - 20));
+        Component text = Component.literal(shown);
         int w = this.font.width(text);
         songText.setMessage(text);
         songText.setWidth(w);
         songText.setX(this.width / 2 - w / 2);
+    }
+    
+    // Shortens text with "..." so it fits inside maxWidth pixels.
+    private String fit(String text, int maxWidth) {
+        if (this.font.width(text) <= maxWidth) return text;
+        String ellipsis = "...";
+        int end = text.length();
+        while (end > 0 && this.font.width(text.substring(0, end) + ellipsis) > maxWidth) {
+            end--;
+        }
+        // don't cut an emoji or special symbol in half
+        if (end > 0 && Character.isHighSurrogate(text.charAt(end - 1))) end--;
+        return text.substring(0, end) + ellipsis;
     }
 
     @Override
