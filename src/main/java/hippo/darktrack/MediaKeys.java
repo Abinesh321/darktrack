@@ -2,6 +2,7 @@ package hippo.darktrack;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import hippo.darktrack.NowPlaying;
 
 public class MediaKeys {
     private interface User32 extends Library {

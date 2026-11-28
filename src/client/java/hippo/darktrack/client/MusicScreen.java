@@ -1,9 +1,11 @@
 package hippo.darktrack.client;
 
 import hippo.darktrack.MediaKeys;
+import hippo.darktrack.NowPlaying;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.components.StringWidget;
 
 public class MusicScreen extends Screen {
     private final Screen parent;
@@ -38,6 +40,12 @@ public class MusicScreen extends Screen {
         addMediaButton("Vol -", MediaKeys.VOLUME_DOWN, x, row2, sideW, h);
         addMediaButton("Mute", MediaKeys.MUTE, midX, row2, midW, h);
         addMediaButton("Vol +", MediaKeys.VOLUME_UP, rightX, row2, sideW, h);
+        
+        String song = NowPlaying.getCurrentSong();
+        Component text = Component.literal(song != null ? song : "Nothing playing");
+        int textWidth = this.font.width(text);
+        this.addRenderableWidget(
+            new StringWidget(this.width / 2 - textWidth / 2, row1 - 18, textWidth, 12, text, this.font));
     }
 
     private void addMediaButton(String label, byte key, int x, int y, int w, int h) {
