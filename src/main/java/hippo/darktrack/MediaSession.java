@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MediaSession {
-    private static final String SCRIPT = """
+    private static final String BOILERPLATE = """
             Add-Type -AssemblyName System.Runtime.WindowsRuntime
             $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]
             function Await($op, $type) {
@@ -17,6 +17,9 @@ public class MediaSession {
             }
             $mgrType = [Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager,Windows.Media.Control,ContentType=WindowsRuntime]
             $mgr = Await ($mgrType::RequestAsync()) $mgrType
+            """;
+
+    private static final String READ_SCRIPT = BOILERPLATE + """
             $fails = 0
             while ($true) {
               try {
@@ -45,14 +48,24 @@ public class MediaSession {
             }
             """;
 
+    private static final String SEEK_SCRIPT = "param([long]$ms)\n" + BOILERPLATE + """
+            foreach ($s in $mgr.GetSessions()) {
+              if ($s.SourceAppUserModelId -like '*Spotify*') {
+                Await ($s.TryChangePlaybackPositionAsync([long]($ms * 10000))) ([bool]) | Out-Null
+              }
+            }
+            """;
+
     private static boolean started = false;
     private static Process process;
+    private static Path seekScriptFile;
 
     private static String status = "NONE";
     private static long endMs = 0;
     private static long baseMs = 0;     // position at baseAt
     private static long baseAt = 0;     // real clock time when baseMs was set
     private static boolean wasPlaying = false;
+    private static long suppressUntil = 0;   // ignore Windows' numbers until this time (after a seek)
 
     public static synchronized void start() {
         if (started) return;
@@ -61,7 +74,7 @@ public class MediaSession {
 
         try {
             Path file = Files.createTempFile("darktrack", ".ps1");
-            Files.writeString(file, SCRIPT, StandardCharsets.UTF_8);
+            Files.writeString(file, READ_SCRIPT, StandardCharsets.UTF_8);
             file.toFile().deleteOnExit();
 
             ProcessBuilder pb = new ProcessBuilder("powershell.exe", "-NoProfile",
@@ -89,6 +102,8 @@ public class MediaSession {
     }
 
     private static synchronized void handleLine(String line) {
+        if (System.currentTimeMillis() < suppressUntil) return;
+
         String[] parts = line.split("\\|");
         if (parts.length != 3) return;
         try {
@@ -126,5 +141,41 @@ public class MediaSession {
         long ms = baseMs;
         if (wasPlaying) ms += System.currentTimeMillis() - baseAt;
         return Math.max(0, Math.min(ms, endMs));
+    }
+
+    // Jumps the song to a position (in milliseconds).
+    public static void seekTo(long ms) {
+        final long target;
+        synchronized (MediaSession.class) {
+            target = Math.max(0, Math.min(ms, endMs));
+            long now = System.currentTimeMillis();
+            baseMs = target;                 // move our own track right away
+            baseAt = now;
+            suppressUntil = now + 2500;      // ignore Windows' old numbers for a moment
+        }
+
+        Thread t = new Thread(() -> {
+            try {
+                Path script;
+                synchronized (MediaSession.class) {
+                    if (seekScriptFile == null) {
+                        seekScriptFile = Files.createTempFile("darktrack-seek", ".ps1");
+                        Files.writeString(seekScriptFile, SEEK_SCRIPT, StandardCharsets.UTF_8);
+                        seekScriptFile.toFile().deleteOnExit();
+                    }
+                    script = seekScriptFile;
+                }
+                new ProcessBuilder("powershell.exe", "-NoProfile", "-WindowStyle", "Hidden",
+                        "-ExecutionPolicy", "Bypass", "-File", script.toString(),
+                        "-ms", String.valueOf(target))
+                        .redirectErrorStream(true)
+                        .start()
+                        .waitFor();
+            } catch (Exception e) {
+                System.out.println("[Darktrack] Seek failed: " + e);
+            }
+        }, "Darktrack-Seek");
+        t.setDaemon(true);
+        t.start();
     }
 }
