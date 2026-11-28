@@ -6,8 +6,16 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class MusicScreen extends Screen {
-    public MusicScreen() {
+    private final Screen parent;
+
+    public MusicScreen(Screen parent) {
         super(Component.literal("Music Controls"));
+        this.parent = parent;
+    }
+
+    @Override
+    public void onClose() {
+        this.minecraft.gui.setScreen(this.parent);
     }
 
     @Override

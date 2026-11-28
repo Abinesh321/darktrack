@@ -26,7 +26,7 @@ public class DarktrackClient implements ClientModInitializer {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof PauseScreen) {
                 Button musicButton = Button.builder(Component.literal("Music"),
-                    b -> client.gui.setScreen(new MusicScreen()))
+                    b -> client.gui.setScreen(new MusicScreen(screen)))
                         .bounds(scaledWidth - 70, 6, 64, 20)
                         .build();
                 Screens.getWidgets(screen).add(musicButton);
@@ -48,7 +48,7 @@ public class DarktrackClient implements ClientModInitializer {
             while (prev.consumeClick()) MediaKeys.press(MediaKeys.PREVIOUS);
             while (play.consumeClick()) MediaKeys.press(MediaKeys.PLAY_PAUSE);
             while (next.consumeClick()) MediaKeys.press(MediaKeys.NEXT);
-            while (open.consumeClick()) client.gui.setScreen(new MusicScreen());
+            while (open.consumeClick()) client.gui.setScreen(new MusicScreen(null));
             while (volDown.consumeClick()) MediaKeys.press(MediaKeys.VOLUME_DOWN);
             while (volUp.consumeClick()) MediaKeys.press(MediaKeys.VOLUME_UP);
             while (mute.consumeClick()) MediaKeys.press(MediaKeys.MUTE);
