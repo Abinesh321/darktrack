@@ -24,7 +24,7 @@ It works by sending Windows media keys, so it works with Spotify and most other 
 - Clickable music widget with buttons, opened with **F9** (close it with **Esc**)
 - All keys can be changed in Options > Controls > Key Binds under "Music Controls"
 - A Music button in the pause menu that opens the widget
-- Shows the current Spotify song name in the widget, updating live
+- Shows the current Spotify song name in the widget, updating live (long names are shortened with "...")
 
 Note: the volume and mute controls change the Windows system volume, so Minecraft's sounds and other apps are affected too.
 
@@ -34,6 +34,7 @@ Note: the volume and mute controls change the Windows system volume, so Minecraf
 - Minecraft 26.2
 - Fabric Loader 0.20.1 or newer
 - Fabric API
+- The song display needs the Spotify desktop app
 
 ## Building from source
 
