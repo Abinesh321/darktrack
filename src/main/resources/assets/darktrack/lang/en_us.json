@@ -6,5 +6,6 @@
     "key.darktrack.open_widget": "Open Music Widget",
     "key.darktrack.volume_down": "Volume Down",
     "key.darktrack.volume_up": "Volume Up",
-    "key.darktrack.mute": "Mute"
+    "key.darktrack.mute": "Mute",
+    "key.darktrack.toggle_hud": "Toggle Song HUD"
 }
